@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_events.dart';
 import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_state.dart';
 import 'package:e_comerce_intern_nhat/src/resources/authentication/auth_repository.dart';
@@ -36,7 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // When User Presses the SignOut Button, we will send the SignOutRequested Event to the AuthBloc to handle it and emit the UnAuthenticated State
     on<SignOutRequested>((event, emit) async {
       emit(Loading());
-      await authRepository.signOut(context);
+      await authRepository.signOut();
       emit(UnAuthenticated());
     });
   }

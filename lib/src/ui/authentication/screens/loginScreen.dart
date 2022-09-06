@@ -1,15 +1,16 @@
 import 'package:e_comerce_intern_nhat/src/constants/colors.dart';
 import 'package:e_comerce_intern_nhat/src/ui/authentication/screens/registerScreen.dart';
+import 'package:e_comerce_intern_nhat/src/ui/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 
-class atLoginScreen extends StatefulWidget {
-  const atLoginScreen({Key? key}) : super(key: key);
+class AtLoginScreen extends StatefulWidget {
+  const AtLoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<atLoginScreen> createState() => _atLoginScreenState();
+  State<AtLoginScreen> createState() => _AtLoginScreen();
 }
 
-class _atLoginScreenState extends State<atLoginScreen> {
+class _AtLoginScreen extends State<AtLoginScreen> {
   GlobalKey formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -20,11 +21,6 @@ class _atLoginScreenState extends State<atLoginScreen> {
     return SafeArea(
         child: Scaffold(
       body: Stack(children: [
-        // Container(
-        //   height: double.infinity,
-        //   width: double.infinity,
-        //   decoration: const BoxDecoration(color: Color(0xFFF5F5F5)),
-        // ),
         Container(
           height: 300 + 50,
           width: 380 + 24,
@@ -201,14 +197,11 @@ class _atLoginScreenState extends State<atLoginScreen> {
                       child: ElevatedButton(
                         //action navigate to dashboard screen
                         onPressed: () async {
-                          if (isLoading) return;
-                          setState(() {});
-                          await Future.delayed(Duration(seconds: 3));
-                          if (this.mounted) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                          }
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const atDashboardScreen()));
                         },
                         style: ElevatedButton.styleFrom(
                             primary: black,

@@ -1,20 +1,16 @@
-import 'package:e_comerce_intern_nhat/src/ui/authentication/screens/loginScreen.dart';
-import 'package:e_comerce_intern_nhat/src/ui/dashboard/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class AuthRepository {
   final _firebaseAuth = FirebaseAuth.instance;
   //Sign Up with emaill and password
-  Future<void> signUp(
-      {required String email, required String password, context}) async {
+  Future<void> signUp({required String email, required String password}) async {
     try {
       await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .whenComplete(() => signIn(
-                email: email,
-                password: password,
-              ));
+          .createUserWithEmailAndPassword(email: email, password: password);
+      // .whenComplete(() => signIn(
+      //       email: email,
+      //       password: password,
+      //     ));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw Exception('The password provided is too weak.');
@@ -26,15 +22,14 @@ class AuthRepository {
     }
   }
 
-  Future<void> signIn(
-      {required String email, required String password, context}) async {
+  Future<void> signIn({required String email, required String password}) async {
     try {
       await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password)
-          .whenComplete(() => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const atDashboardScreen())));
+          .signInWithEmailAndPassword(email: email, password: password);
+      // .whenComplete(() => Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => const atDashboardScreen())));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw Exception('No user found for that email.');
@@ -44,10 +39,11 @@ class AuthRepository {
     }
   }
 
-  Future<void> signOut(context) async {
+  Future<void> signOut() async {
     try {
-      await _firebaseAuth.signOut().whenComplete(() => Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const atLoginScreen())));
+      await _firebaseAuth.signOut();
+      // .whenComplete(() => Navigator.push(context,
+      //     MaterialPageRoute(builder: (context) => const atLoginScreen())));
     } catch (e) {
       throw Exception(e);
     }

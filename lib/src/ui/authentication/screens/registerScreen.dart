@@ -1,7 +1,9 @@
+import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_bloc.dart';
+import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_events.dart';
+import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_state.dart';
 import 'package:e_comerce_intern_nhat/src/constants/colors.dart';
-import 'package:e_comerce_intern_nhat/src/ui/authentication/screens/loginScreen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 
 class atSignUpScreen extends StatefulWidget {
@@ -243,49 +245,46 @@ class _atSignUpScreenState extends State<atSignUpScreen> {
                           color: black,
                         ),
                         child: ElevatedButton(
-                          //action navigate to dashboard screen
-                          onPressed: () async {
-                            if (isLoading) return;
-                            setState(() {});
-                            await Future.delayed(Duration(seconds: 3));
-                            if (this.mounted) {
-                              setState(() {
-                                isLoading = false;
-                              });
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                              primary: black,
-                              onPrimary: Colors.white,
-                              shadowColor: black.withOpacity(0.25),
-                              elevation: 15,
-                              animationDuration:
-                                  const Duration(milliseconds: 300),
-                              // maximumSize: Size.fromWidth(200),
-                              minimumSize: const Size(327 + 24, 44),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0)),
-                              // BorderRadius.all(Radius.circular(16)),
-                              textStyle: const TextStyle(
-                                  color: white,
-                                  fontFamily: 'SFProText',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18)),
-                          child: isLoading
-                              ? Container(
+                            //action navigate to dashboard screen
+                            onPressed: () async {
+                              BlocProvider.of<AuthBloc>(context).add(
+                                SignUpRequested(emailController.text,
+                                    passwordController.text),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: black,
+                                onPrimary: Colors.white,
+                                shadowColor: black.withOpacity(0.25),
+                                elevation: 15,
+                                animationDuration:
+                                    const Duration(milliseconds: 300),
+                                // maximumSize: Size.fromWidth(200),
+                                minimumSize: const Size(327 + 24, 44),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0)),
+                                // BorderRadius.all(Radius.circular(16)),
+                                textStyle: const TextStyle(
+                                    color: white,
+                                    fontFamily: 'SFProText',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18)),
+                            child: BlocBuilder<AuthBloc, AuthState>(
+                                builder: ((context, state) {
+                              if (state is Loading) {
+                                return SizedBox(
                                   height: 48,
                                   width: 200,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
+                                    children: const [
+                                      SizedBox(
                                           width: 24,
                                           height: 24,
-                                          child:
-                                              const CircularProgressIndicator(
-                                                  color: white)),
-                                      const SizedBox(width: 16),
-                                      const Text(
+                                          child: CircularProgressIndicator(
+                                              color: white)),
+                                      SizedBox(width: 16),
+                                      Text(
                                         "Please Wait...",
                                         style: TextStyle(
                                           fontSize: 18,
@@ -296,11 +295,13 @@ class _atSignUpScreenState extends State<atSignUpScreen> {
                                       ),
                                     ],
                                   ),
-                                )
-                              : Container(
+                                );
+                              }
+                              if (state is Authenticated) {
+                                return Container(
                                   alignment: Alignment.center,
                                   child: const Text(
-                                    'Sign Up',
+                                    'Success',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontFamily: 'Urbanist',
@@ -308,8 +309,21 @@ class _atSignUpScreenState extends State<atSignUpScreen> {
                                       color: white,
                                     ),
                                   ),
+                                );
+                              }
+                              return Container(
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'Sign Up',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w600,
+                                    color: white,
+                                  ),
                                 ),
-                        ),
+                              );
+                            }))),
                       ),
                       const SizedBox(height: 24),
                       Row(
