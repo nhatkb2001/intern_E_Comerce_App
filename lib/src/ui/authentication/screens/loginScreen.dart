@@ -1,6 +1,7 @@
 import 'package:e_comerce_intern_nhat/src/constants/colors.dart';
 import 'package:e_comerce_intern_nhat/src/ui/authentication/screens/registerScreen.dart';
 import 'package:e_comerce_intern_nhat/src/ui/dashboard/dashboard.dart';
+import 'package:e_comerce_intern_nhat/src/ui/navigation/navigationBar.dart';
 import 'package:flutter/material.dart';
 
 class AtLoginScreen extends StatefulWidget {
@@ -200,8 +201,7 @@ class _AtLoginScreen extends State<AtLoginScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const atDashboardScreen()));
+                                  builder: (context) => navigationBar()));
                         },
                         style: ElevatedButton.styleFrom(
                             primary: black,
