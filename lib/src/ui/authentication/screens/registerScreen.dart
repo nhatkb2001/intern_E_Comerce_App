@@ -2,6 +2,7 @@ import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_bloc.dart';
 import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_events.dart';
 import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_state.dart';
 import 'package:e_comerce_intern_nhat/src/constants/colors.dart';
+import 'package:e_comerce_intern_nhat/src/ui/authentication/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -20,6 +21,12 @@ class _atSignUpScreenState extends State<atSignUpScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
   bool showPassword = true;
   bool isLoading = false;
+  void createAccountWithEmailAndPassword(context) {
+    BlocProvider.of<AuthBloc>(context).add(
+      SignUpRequested(emailController.text, passwordController.text),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -247,10 +254,7 @@ class _atSignUpScreenState extends State<atSignUpScreen> {
                         child: ElevatedButton(
                             //action navigate to dashboard screen
                             onPressed: () async {
-                              BlocProvider.of<AuthBloc>(context).add(
-                                SignUpRequested(emailController.text,
-                                    passwordController.text),
-                              );
+                              createAccountWithEmailAndPassword(context);
                             },
                             style: ElevatedButton.styleFrom(
                                 primary: black,
@@ -269,8 +273,21 @@ class _atSignUpScreenState extends State<atSignUpScreen> {
                                     fontFamily: 'SFProText',
                                     fontWeight: FontWeight.w600,
                                     fontSize: 18)),
-                            child: BlocBuilder<AuthBloc, AuthState>(
-                                builder: ((context, state) {
+                            child: BlocConsumer<AuthBloc, AuthState>(
+                                listener: (context, state) {
+                              if (state is Authenticated) {
+                                // Navigating to the dashboard screen if the user is authenticated
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AtLoginScreen()));
+                              }
+                              if (state is AuthError) {
+                                // Displaying the error message if the user is not authenticated
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(state.error)));
+                              }
+                            }, builder: ((context, state) {
                               if (state is Loading) {
                                 return SizedBox(
                                   height: 48,

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AuthRepository {
   final _firebaseAuth = FirebaseAuth.instance;
@@ -26,10 +27,6 @@ class AuthRepository {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      // .whenComplete(() => Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => const atDashboardScreen())));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw Exception('No user found for that email.');

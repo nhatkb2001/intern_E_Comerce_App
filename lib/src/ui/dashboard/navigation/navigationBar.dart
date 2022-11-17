@@ -1,5 +1,7 @@
 import 'package:e_comerce_intern_nhat/src/constants/colors.dart';
+import 'package:e_comerce_intern_nhat/src/ui/cart/screens/cartScreen.dart';
 import 'package:e_comerce_intern_nhat/src/ui/dashboard/dashboard.dart';
+import 'package:e_comerce_intern_nhat/src/ui/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -22,7 +24,7 @@ class _navigationBar extends State<navigationBar>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     // User? user = FirebaseAuth.instance.currentUser;
     // final userid = user?.uid.toString();
     // uid = userid!;
@@ -38,11 +40,10 @@ class _navigationBar extends State<navigationBar>
   Widget build(BuildContext context) {
     return Scaffold(
       body: TabBarView(
-        children: const <Widget>[
+        children: <Widget>[
           atDashboardScreen(),
-          atDashboardScreen(),
-          atDashboardScreen(),
-          atDashboardScreen(),
+          atCartScreen(),
+          profileCenterScreen(),
         ],
         controller: _tabController,
         //onPageChanged: whenPageChanged,
@@ -60,10 +61,10 @@ class _navigationBar extends State<navigationBar>
         //     right: (MediaQuery.of(context).size.width - 375 + 24) / 2),
         child: ClipRRect(
           child: Container(
-            color: violet,
+            color: black,
             child: TabBar(
               labelColor: white,
-              unselectedLabelColor: black,
+              unselectedLabelColor: white,
               indicator: const UnderlineTabIndicator(
                   borderSide: BorderSide(color: white, width: 1)),
               //For Indicator Show and Customization
@@ -81,12 +82,6 @@ class _navigationBar extends State<navigationBar>
                     //   height: 24, width: 24
                     // )
                     icon: Icon(Iconsax.shopping_cart, size: 24)),
-                Tab(
-                    // icon: SvgPicture.asset(
-                    //   nbIncidentReport,
-                    //   height: 24, width: 24
-                    // )
-                    icon: Icon(Iconsax.notification, size: 24)),
                 Tab(
                     // icon: SvgPicture.asset(
                     //   nbIncidentReport,

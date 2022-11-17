@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_comerce_intern_nhat/src/resources/product/productModel.dart';
+import 'package:e_comerce_intern_nhat/src/model/product/productModel.dart';
 import 'package:e_comerce_intern_nhat/src/ui/product/screens/createProduct.dart';
 import 'package:e_comerce_intern_nhat/src/ui/product/screens/productDetail.dart';
 import 'package:flutter/material.dart';

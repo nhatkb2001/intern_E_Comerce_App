@@ -1,8 +1,14 @@
+import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_bloc.dart';
+import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_events.dart';
+import 'package:e_comerce_intern_nhat/src/blocs/auth_blocs/auth_state.dart';
 import 'package:e_comerce_intern_nhat/src/constants/colors.dart';
+import 'package:e_comerce_intern_nhat/src/resources/authentication/auth_repository.dart';
 import 'package:e_comerce_intern_nhat/src/ui/authentication/screens/registerScreen.dart';
 import 'package:e_comerce_intern_nhat/src/ui/dashboard/dashboard.dart';
-import 'package:e_comerce_intern_nhat/src/ui/navigation/navigationBar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../dashboard/navigation/navigationBar.dart';
 
 class AtLoginScreen extends StatefulWidget {
   const AtLoginScreen({Key? key}) : super(key: key);
@@ -17,14 +23,20 @@ class _AtLoginScreen extends State<AtLoginScreen> {
   TextEditingController passwordController = TextEditingController();
   bool showPassword = true;
   bool isLoading = false;
+  void authenticateWithEmailAndPassword(context) {
+    BlocProvider.of<AuthBloc>(context).add(
+      SignInRequested(emailController.text, passwordController.text),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       body: Stack(children: [
         Container(
-          height: 300 + 50,
-          width: 380 + 24,
+          height: 300 + 12,
+          width: 380 + 24 + 24,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("lib/src/constants/images/Background.png"),
@@ -46,7 +58,7 @@ class _AtLoginScreen extends State<AtLoginScreen> {
         Container(
           margin: const EdgeInsets.only(left: 24, top: 76),
           height: 29,
-          width: 81,
+          width: 90,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("lib/src/constants/images/logo.png"),
@@ -196,44 +208,53 @@ class _AtLoginScreen extends State<AtLoginScreen> {
                         color: black,
                       ),
                       child: ElevatedButton(
-                        //action navigate to dashboard screen
-                        onPressed: () async {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => navigationBar()));
-                        },
-                        style: ElevatedButton.styleFrom(
-                            primary: black,
-                            onPrimary: Colors.white,
-                            shadowColor: black.withOpacity(0.25),
-                            elevation: 15,
-                            animationDuration:
-                                const Duration(milliseconds: 300),
-                            // maximumSize: Size.fromWidth(200),
-                            minimumSize: const Size(327 + 24, 44),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.0)),
-                            // BorderRadius.all(Radius.circular(16)),
-                            textStyle: const TextStyle(
-                                color: white,
-                                fontFamily: 'SFProText',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18)),
-                        child: isLoading
-                            ? Container(
+                          onPressed: () async {
+                            authenticateWithEmailAndPassword(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              primary: black,
+                              onPrimary: Colors.white,
+                              shadowColor: black.withOpacity(0.25),
+                              elevation: 15,
+                              animationDuration:
+                                  const Duration(milliseconds: 300),
+                              // maximumSize: Size.fromWidth(200),
+                              minimumSize: const Size(327 + 24, 44),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0)),
+                              // BorderRadius.all(Radius.circular(16)),
+                              textStyle: const TextStyle(
+                                  color: white,
+                                  fontFamily: 'SFProText',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18)),
+                          child: BlocConsumer<AuthBloc, AuthState>(
+                              listener: (context, state) {
+                            if (state is Authenticated) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => navigationBar()));
+                            }
+                            if (state is AuthError) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(state.error)));
+                            }
+                          }, builder: ((context, state) {
+                            if (state is Loading) {
+                              return SizedBox(
                                 height: 48,
                                 width: 200,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
+                                  children: const [
+                                    SizedBox(
                                         width: 24,
                                         height: 24,
-                                        child: const CircularProgressIndicator(
+                                        child: CircularProgressIndicator(
                                             color: white)),
-                                    const SizedBox(width: 16),
-                                    const Text(
+                                    SizedBox(width: 16),
+                                    Text(
                                       "Please Wait...",
                                       style: TextStyle(
                                         fontSize: 18,
@@ -244,11 +265,13 @@ class _AtLoginScreen extends State<AtLoginScreen> {
                                     ),
                                   ],
                                 ),
-                              )
-                            : Container(
+                              );
+                            }
+                            if (state is Authenticated) {
+                              return Container(
                                 alignment: Alignment.center,
                                 child: const Text(
-                                  'Sign in',
+                                  'Success',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontFamily: 'Urbanist',
@@ -256,8 +279,21 @@ class _AtLoginScreen extends State<AtLoginScreen> {
                                     color: white,
                                   ),
                                 ),
+                              );
+                            }
+                            return Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'Sign In',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Urbanist',
+                                  fontWeight: FontWeight.w600,
+                                  color: white,
+                                ),
                               ),
-                      ),
+                            );
+                          }))),
                     ),
                     const SizedBox(height: 24),
                     Row(
